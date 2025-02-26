@@ -9,4 +9,4 @@ boto3
 datetime
 logging
 python-dotenv
-frb
+requests
