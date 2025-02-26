@@ -1,6 +1,7 @@
-name: Data Extraction from FRED API to 
+name: Data Extraction from FRED API to S3
 
 on:
+  workflow_dispatch:  # Manually trigger enabled
   schedule:
     - cron: '0 10 * * *'
 
