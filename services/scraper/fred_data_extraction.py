@@ -1,14 +1,13 @@
 import os
+import boto3
 import requests
 import pandas as pd
-import boto3
 from io import StringIO
-from datetime import datetime
 from dotenv import load_dotenv
+from datetime import datetime,timedelta
 
 load_dotenv()
 
-# Constants
 FRED_API_KEY = os.getenv("FRED_API_KEY")  
 FRED_URL = 'https://api.stlouisfed.org/fred/series/observations'
 AWS_S3_BUCKET_NAME = os.getenv("AWS_S3_BUCKET_NAME")  
@@ -30,22 +29,17 @@ def fetch_and_load_to_s3(FRED_DATA_ID):
         'file_type': 'json',
         'observation_start': '2020-01-01'
     }
-    
+
     response = requests.get(FRED_URL, params=params)
     response.raise_for_status()     
-    
     data = response.json()
     observations = data.get('observations', [])
-    
     if not observations:
         print("No data retrieved from FRED API.")
         return pd.DataFrame()
-
     df_new = pd.DataFrame(observations)
     df_new['date'] = pd.to_datetime(df_new['date'])
-    
-    upload_to_s3(df_new,FRED_DATA_ID)
-    
+    upload_to_s3(df_new,FRED_DATA_ID)    
     return df_new
 
 def upload_to_s3(df,DATA_ID):
@@ -53,15 +47,27 @@ def upload_to_s3(df,DATA_ID):
     if df.empty:
         print("No data to upload to S3.")
         return
-
     csv_buffer = StringIO()
     df.to_csv(csv_buffer, index=False)
-    
     s3_file_key = f"{CURRENT_DATE}/{DATA_ID}_data.csv"
-    
     s3.put_object(Bucket=AWS_S3_BUCKET_NAME, Key=s3_file_key, Body=csv_buffer.getvalue())
-    
     print(f"Data successfully uploaded to S3 at {s3_file_key}")
+
+def data_retention(retention_days):
+    """Delete the folder in S3 that corresponds to CURRENT_DATE - retention_days"""
+    try:
+        three_days_ago = (datetime.now() - timedelta(days=retention_days)).strftime('%Y-%m-%d')
+        folder_to_delete = f"{three_days_ago}/"
+        response = s3.list_objects_v2(Bucket=AWS_S3_BUCKET_NAME, Prefix=folder_to_delete)
+        if 'Contents' in response:
+            for obj in response['Contents']:
+                s3.delete_object(Bucket=AWS_S3_BUCKET_NAME, Key=obj['Key'])
+                print(f"Deleted file: {obj['Key']}")
+            print(f"Deleted data for partition : {folder_to_delete}")
+        else:
+            print(f"No files found for folder: {folder_to_delete}")
+    except Exception as e:
+        print(f"An error occurred while deleting the folder: {e}")
 
 def main():
     """Main function to execute the pipeline."""
@@ -69,13 +75,12 @@ def main():
         FRED_DATA_ID = 'DGS10,DGS2'
         for i in FRED_DATA_ID.split(','):
             print(f"Fetching data for {i}...")
-            df_new = fetch_and_load_to_s3(i)
-                   
+            df_new = fetch_and_load_to_s3(i)  
         if not df_new.empty:
             print(f"Latest Data Loaded into S3 for partition: {CURRENT_DATE}")
+            data_retention(3)
         else:
             print("No new data to update.")
-    
     except Exception as e:
         print(f"An error occurred: {e}")
 
