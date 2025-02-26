@@ -21,11 +21,11 @@ s3 = boto3.client(
     region_name=os.getenv("AWS_REGION")
 )
 
-def fetch_and_load_to_s3():
+def fetch_and_load_to_s3(FRED_DATA_ID):
     """Fetch new data from FRED API and upload to S3."""
     
     params = {
-        'series_id': 'T10Y2Y',
+        'series_id': f'{FRED_DATA_ID}',
         'api_key': FRED_API_KEY,
         'file_type': 'json',
         'observation_start': '2020-01-01'
@@ -44,11 +44,11 @@ def fetch_and_load_to_s3():
     df_new = pd.DataFrame(observations)
     df_new['date'] = pd.to_datetime(df_new['date'])
     
-    upload_to_s3(df_new)
+    upload_to_s3(df_new,FRED_DATA_ID)
     
     return df_new
 
-def upload_to_s3(df):
+def upload_to_s3(df,DATA_ID):
     """Upload the DataFrame to S3 as a CSV file."""
     if df.empty:
         print("No data to upload to S3.")
@@ -57,7 +57,7 @@ def upload_to_s3(df):
     csv_buffer = StringIO()
     df.to_csv(csv_buffer, index=False)
     
-    s3_file_key = f"{CURRENT_DATE}/t10y2y_data.csv"
+    s3_file_key = f"{CURRENT_DATE}/{DATA_ID}_data.csv"
     
     s3.put_object(Bucket=AWS_S3_BUCKET_NAME, Key=s3_file_key, Body=csv_buffer.getvalue())
     
@@ -66,8 +66,11 @@ def upload_to_s3(df):
 def main():
     """Main function to execute the pipeline."""
     try:
-        df_new = fetch_and_load_to_s3()
-        
+        FRED_DATA_ID = 'DGS10,DGS2'
+        for i in FRED_DATA_ID.split(','):
+            print(f"Fetching data for {i}...")
+            df_new = fetch_and_load_to_s3(i)
+                   
         if not df_new.empty:
             print(f"Latest Data Loaded into S3 for partition: {CURRENT_DATE}")
         else:
