@@ -1,0 +1,15 @@
+definition_version: 1
+snowpark:
+  project_name: "hol"
+  stage_name: "analytics.deployment"
+  src: "function_scraper/"
+  functions:
+    - name: "fred_data_scraper_udf"
+      database: "fred_db"
+      schema: "RAW_FRED"
+      handler: "function.main"
+      runtime: "3.10"
+      signature:
+        - name: "temp_f"
+          type: "float"
+      returns: float

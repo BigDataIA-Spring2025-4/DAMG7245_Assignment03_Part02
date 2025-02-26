@@ -1,0 +1,5 @@
+python-dotenv
+datetime
+requests
+pandas
+boto3
