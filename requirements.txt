@@ -1,11 +1,10 @@
-streamlit
-streamlit_option_menu
 numpy
 pandas
-fastapi
-bs4
 requests
 boto3
 datetime
 logging
 python-dotenv
+snowflake-cli-labs
+snowflake-snowpark-python
+snowflake
