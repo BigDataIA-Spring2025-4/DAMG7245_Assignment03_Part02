@@ -19,9 +19,9 @@ def create_snowflake_connection():
 # Function to load data from Snowflake
 # @st.cache_data()
 def load_data(conn):
-    daily_query = "SELECT * FROM FRED_DB.PROD_ANALYTICS.FRED_COMBINED_DAILY"
-    weekly_query = "SELECT * FROM FRED_DB.PROD_ANALYTICS.FRED_COMBINED_WEEKLY"
-    monthly_query =  "SELECT * FROM FRED_DB.PROD_ANALYTICS.FRED_COMBINED_MONTHLY"
+    daily_query = f"SELECT * FROM {st.secrets["snowflake"]["database"]}.{st.secrets["snowflake"]["schema"]}.FRED_COMBINED_DAILY"
+    weekly_query = f"SELECT * FROM {st.secrets["snowflake"]["database"]}.{st.secrets["snowflake"]["schema"]}.FRED_COMBINED_WEEKLY"
+    monthly_query = f"SELECT * FROM {st.secrets["snowflake"]["database"]}.{st.secrets["snowflake"]["schema"]}.FRED_COMBINED_MONTHLY"
 
     daily_agg = pd.read_sql(daily_query, conn)
     weekly_agg = pd.read_sql(weekly_query, conn)
