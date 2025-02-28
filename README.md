@@ -10,11 +10,11 @@ This repository contains the implementation of a robust data engineering pipelin
 - Yohan Markose
 
 ### Resources : 
-- **Streamlit Application** : [Streamlit App]()
+- **Streamlit Application** : [Streamlit App](https://fredanalytics.streamlit.app/)
 
 - **Google Codelab**: [Codelab]()
 
-- **Google Docs**: [Project Document]()
+- **Google Docs**: [Project Document](https://docs.google.com/document/d/1jTG4u1Wsswd29oEoYj2Cy0oAIexVLM-iuCtUTEH-1QU/edit?usp=sharing)
 
 - **Video Walkthrough**: [Video]()
 
