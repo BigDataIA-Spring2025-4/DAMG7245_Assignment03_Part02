@@ -27,7 +27,7 @@ This repository contains the implementation of a robust data engineering pipelin
 
 ### Architecture Diagram :
 
-
+![Application Workflow Diagram](snowflake_data_pipeline.png)
 
 ### Workflow :
 
