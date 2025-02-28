@@ -7,21 +7,21 @@ from diagrams.programming.flowchart import PredefinedProcess  # Use for GitHub A
 # Create the diagram
 with Diagram("Snowflake Data Pipeline", show=True, direction="LR"):
     # GitHub Actions for scheduling
-    github_actions = PredefinedProcess("GitHub Actions (Scheduler)")
+    github_actions = Custom("GitHub Actions (Scheduler)", "./services/diagrams/src/github-actions.png")
 
     # Fred Website Cluster (Frontend)
     with Cluster("Fred Website"):
-        frontend = Custom("Fred Website", "./services/diagrams/src/fred-logo.png")
+        fred = Custom("Fred Website", "./services/diagrams/src/fred-logo.png")
         
     # AWS S3 Bucket for storing data
     with Cluster("AWS"):
         s3_bucket = S3("AWS S3 Bucket")
 
     # Snowflake environment
-    with Cluster("Snowflake"):
+    with Cluster("Snowflake", direction="TB"):
         raw_table = Snowflake("Raw Table")
         harmonized_table = Snowflake("Harmonized Table")
-        snowflake_task = Snowflake("Snowflake Task (ETL Processing)")
+        snowflake_task = Snowflake("Snowflake Task \n(ETL Processing)")
         analytics_table = Snowflake("Analytics Table")
 
     # Streamlit Dashboard Cluster (Frontend)
@@ -29,10 +29,12 @@ with Diagram("Snowflake Data Pipeline", show=True, direction="LR"):
         streamlit_app = Custom("Streamlit UI", "./services/diagrams/src/streamlit.png")
 
     # Data pipeline flow
-    github_actions >> Edge(label="Extract FRED API Data (Daily)") >> s3_bucket
-    s3_bucket >> Edge(label="Load to Raw Tables") >> raw_table
-    raw_table >> Edge(label="Transform to Harmonized Schema") >> harmonized_table
-    harmonized_table >> Edge(label="Trigger Snowflake Task") >> snowflake_task
-    snowflake_task >> Edge(label="Load to Analytics") >> analytics_table
-    analytics_table >> Edge(label="Visualize Data") >> streamlit_app
+    fred >> Edge(label="Extract Data from Fred API")>> github_actions 
+    github_actions >> Edge(label="Stage Data in S3") >> s3_bucket
+    s3_bucket >> Edge(label="Load Raw Tables") >> raw_table
+    raw_table >> Edge(label="Harmonized Schema") >> harmonized_table
+    analytics_table >> Edge(label="Orchestrate Jobs") >> snowflake_task
+    harmonized_table >> Edge(label="Load to Analytics") >> analytics_table
+    analytics_table >> streamlit_app
+    streamlit_app >> analytics_table
 
