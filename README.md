@@ -16,7 +16,7 @@ This repository contains the implementation of a robust data engineering pipelin
 
 - **Google Docs**: [Project Document](https://docs.google.com/document/d/1jTG4u1Wsswd29oEoYj2Cy0oAIexVLM-iuCtUTEH-1QU/edit?usp=sharing)
 
-- **Video Walkthrough**: [Video]()
+- **Video Walkthrough**: [Video](https://northeastern-my.sharepoint.com/personal/gangurde_a_northeastern_edu/_layouts/15/stream.aspx?id=%2Fpersonal%2Fgangurde%5Fa%5Fnortheastern%5Fedu%2FDocuments%2FRecordings%2FMeeting%20in%20DAMG7245%20%2D%20Team%2005%2D20250228%5F071838%2DMeeting%20Recording%2Emp4&ct=1740746170452&or=Teams%2DHL&ga=1&LOF=1&referrer=StreamWebApp%2EWeb&referrerScenario=AddressBarCopied%2Eview%2E1797764c%2D0e6c%2D4d8b%2D9b7a%2D77df3dd2626c)
 
 ### Technologies Used :
 - **Streamlit** : Frontend Visual Dataset for analytics
