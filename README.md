@@ -1,4 +1,4 @@
-# FRED (Federal Reserve Economic Data) - Snowflake Pipelines 
+# FRED (Federal Reserve Economic Data) - Snowflake Pipelines
 
 ### Project Overview :
 This repository contains the implementation of a robust data engineering pipeline designed to process financial data from the Federal Reserve Economic Data (FRED) platform, specifically focusing on U.S. Treasury yields for 10-Year and 2-Year bonds. Leveraging Snowflake's Snowpark for Python, the project provides an efficient system for extracting, transforming, and validating financial data to enable advanced analysis and reporting.
